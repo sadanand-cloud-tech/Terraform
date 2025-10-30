@@ -1,9 +1,10 @@
 
 resource "aws_instance" "name" {
     ami = var.ami_id
+    count = 5
     instance_type = "t3.micro"
     tags = {
-        Name = "ec2-14"
+        Name = "ec2-1"
       
     }
   
