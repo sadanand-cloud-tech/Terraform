@@ -12,6 +12,13 @@ resource "aws_instance" "dev" {
     lifecycle {
   ignore_changes = [tags]
 }
+lifecycle {
+  create_before_destroy = true
 }
+lifecycle {
+  ignore_changes = [tags]
+}
+}
+
 
 
