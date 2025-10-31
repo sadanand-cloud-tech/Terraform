@@ -156,3 +156,10 @@ resource "aws_instance" "private_ec2" {
     Name = "private-ec2"
   }
 }
+resource "aws_s3_bucket" "name" {
+    bucket = "asdfghjkertyuiopbm"
+
+}
+
+##terraform apply -target=aws_s3_bucket.name
+#terraform destroy -target=aws_instance.public_ec2
