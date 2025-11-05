@@ -26,7 +26,7 @@ resource "aws_db_instance" "default" {
   maintenance_window = "sun:04:00-sun:05:00"  # Maintenance every Sunday (UTC)
 
   # Enable deletion protection (to prevent accidental deletion)
-  deletion_protection = true
+  deletion_protection = false
 
   # Skip final snapshot
   skip_final_snapshot = true
@@ -81,7 +81,7 @@ data "aws_subnet" "subnet_2" {
   }
 }
 resource "aws_db_subnet_group" "sub-grp" {
-  name       = "mycutsubnet"
+  name       = "mycutsubnett"
   subnet_ids = [data.aws_subnet.subnet_1.id, data.aws_subnet.subnet_2.id]
 
   tags = {
@@ -92,28 +92,58 @@ resource "aws_db_subnet_group" "sub-grp" {
 # ------------------------------------
 # RDS Read Replica (WORKING CODE)
 # ------------------------------------
-resource "aws_db_instance" "rds_read_replica" {
-  identifier           = "rds-test-read-replica"
+# resource "aws_db_instance" "rds_read_replica" {
+#   identifier           = "rds-test-read-replica"
 
-  # USE ARN instead of identifier (important)
-  replicate_source_db  = 
+#   # USE ARN instead of identifier (important)
+#   replicate_source_db  = 
+
+#   instance_class       = "db.t3.micro"
+#   publicly_accessible  = false
+
+#   # Must match primary instance
+#   engine               = "mysql"
+#   engine_version       = "8.0"
+
+#   # Subnet group (same as primary)
+#   db_subnet_group_name = aws_db_subnet_group.sub-grp.id
+
+#   # Monitoring (optional)
+#   monitoring_interval  = 60
+#   monitoring_role_arn  = aws_iam_role.admin2.arn
+
+#   # Make sure RDS is created before replica
+#   depends_on = [
+#     aws_db_instance.default
+#   ]
+#}
+
+
+# -----------------------------------
+# Read Replica for RDS (Using Existing Primary)
+# -----------------------------------
+
+resource "aws_db_instance" "read_replica" {
+  identifier          = "rds-test-replica"
+
+  # ✅ ARN must be in quotes
+  replicate_source_db = "arn:aws:rds:us-east-1:407291110458:db:rds-test"
 
   instance_class       = "db.t3.micro"
   publicly_accessible  = false
+  parameter_group_name = "default.mysql8.0"
 
-  # Must match primary instance
-  engine               = "mysql"
-  engine_version       = "8.0"
+  # ✅ Use subnet group name directly (string)
+  db_subnet_group_name = "mycutsubnett"
 
-  # Subnet group (same as primary)
-  db_subnet_group_name = aws_db_subnet_group.sub-grp.id
+  # ✅ IAM monitoring role (use existing ARN)
+  monitoring_interval = 60
+  monitoring_role_arn = "arn:aws:iam::407291110458:role/rds-monitoring-role-terraform"
+  deletion_protection  = false
+  skip_final_snapshot = true
 
-  # Monitoring (optional)
-  monitoring_interval  = 60
-  monitoring_role_arn  = aws_iam_role.admin2.arn
-
-  # Make sure RDS is created before replica
-  depends_on = [
-    aws_db_instance.default
-  ]
+  tags = {
+    Name = "rds-read-replica"
+    Role = "ReadReplica"
+  }
 }
