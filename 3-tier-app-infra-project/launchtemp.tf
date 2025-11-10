@@ -1,59 +1,50 @@
-data "aws_ami" "example" {
-  most_recent = true
-  owners      = ["self"] # Replace with the AWS account ID if needed
-
-  filter {
-    name   = "name"
-    values = ["frontend-ami"] # Use your AMI name pattern
-  }
-}
-
-# Launch Template Resource
+###############################################
+#  FRONTEND LAUNCH TEMPLATE
+###############################################
 resource "aws_launch_template" "frontend" {
-  name = "frontend-terraform"
-  description = "frontend-terraform"
-  image_id = data.aws_ami.example.id
+  name        = "frontend-terraform"
+  description = "Launch template for Frontend"
+
+  image_id      = "ami-0157af9aea2eef346"   # <-- Replace with your AMI ID
   instance_type = "t3.micro"
-  vpc_security_group_ids = [aws_security_group.frontend-server-sg.id]
-  key_name = "projectkey" #chnage the key 
-  #user_data = filebase64("${path.module}/frontend-lt.sh")
-  #default_version = 1
+  key_name      = "projectkey"              # <-- Replace with your key pair name
+
+  # Optional startup script
+  # user_data = filebase64("${path.module}/frontend-lt.sh")
+
   update_default_version = true
+
   tag_specifications {
     resource_type = "instance"
     tags = {
       Name = "frontend-terraform"
+      Role = "frontend"
     }
   }
 }
 
-###################################################################################
-data "aws_ami" "example1" {
-  most_recent = true
-  owners      = ["self"] # Replace with the AWS account ID if needed
 
-  filter {
-    name   = "name"
-    values = ["backend-ami"] # Use your AMI name pattern
-  }
-}
-
-
-# Launch Template Resource
+###############################################
+#  BACKEND LAUNCH TEMPLATE
+###############################################
 resource "aws_launch_template" "backend" {
-  name = "backend-terraform"
-  description = "backend-terraform"
-  image_id = data.aws_ami.example1.id
+  name        = "backend-terraform"
+  description = "Launch template for Backend"
+
+  image_id      = "ami-0157af9aea2eef346"   # <-- Replace with your AMI ID
   instance_type = "t3.micro"
-  vpc_security_group_ids = [aws_security_group.backend-server-sg.id]
-  key_name = "projectkey" 
-  #user_data = filebase64("${path.module}/backend-lt.sh")
-  #default_version = 1
+  key_name      = "projectkey"              # <-- Replace with your key pair name
+
+  # Optional startup script
+  # user_data = filebase64("${path.module}/backend-lt.sh")
+
   update_default_version = true
+
   tag_specifications {
     resource_type = "instance"
     tags = {
       Name = "backend-terraform"
+      Role = "backend"
     }
   }
 }
