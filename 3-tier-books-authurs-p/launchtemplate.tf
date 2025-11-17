@@ -3,7 +3,7 @@
 #########################################
 resource "aws_key_pair" "terraform_keypair" {
   key_name   = "terraform-keypair"
-  public_key = file("~/.ssh/id_ed25519.pub") # path to your public SSH key
+  public_key = file("DELL/.ssh/id_ed25519.pub") # path to your public SSH key
 }
 
 #########################################
