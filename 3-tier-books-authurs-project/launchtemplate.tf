@@ -2,8 +2,8 @@
 # Key Pair Resource
 #########################################
 resource "aws_key_pair" "terraform_keypair" {
-  key_name   = "terraform-keypair"
-  public_key = file("DELL/.ssh/id_ed25519.pub") # path to your public SSH key
+  key_name   = "terraforms-keypair"
+  public_key = file("C:/Users/DELL/.ssh/id_ed25519.pub") # path to your public SSH key
 }
 
 #########################################
@@ -21,7 +21,7 @@ data "aws_ami" "frontend" {
 
 # Launch Template Resource
 resource "aws_launch_template" "frontend" {
-  name                   = "frontend-terraform-v2"
+  name                   = "frontend-terraform-v22"
   description             = "frontend-terraform"
   image_id                = var.ami
   instance_type           = "t3.micro"
@@ -54,7 +54,7 @@ data "aws_ami" "backend" {
 
 # Launch Template Resource
 resource "aws_launch_template" "backend" {
-  name                   = "backend-terraform-v2"
+  name                   = "backend-terraform-v21"
   description             = "backend-terraform"
   image_id                = var.ami
   instance_type           = "t3.micro"

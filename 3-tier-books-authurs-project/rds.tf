@@ -1,7 +1,7 @@
 resource "aws_db_instance" "rds" {
   allocated_storage      = 20
   identifier = "book-rds"
-  db_subnet_group_name   = aws_db_subnet_group.sub_grp.id
+  db_subnet_group_name   = aws_db_subnet_group.sub-grp.id
   engine                 = "mysql"
   engine_version         = "8.0"
   instance_class         = "db.t3.micro"
@@ -21,8 +21,8 @@ resource "aws_db_instance" "rds" {
   }
 }
 
-resource "aws_db_subnet_group" "sub_grp" {
-  name       = "main"
+resource "aws_db_subnet_group" "sub-grp" {
+  name       = "mains"
   subnet_ids = [aws_subnet.prvt7.id, aws_subnet.prvt8.id]
   depends_on = [ aws_subnet.prvt7,aws_subnet.prvt8 ]
 
